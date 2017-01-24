@@ -2,14 +2,11 @@ import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
-import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
-import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import javax.jms.Message;
 
 
 public class recv {
@@ -30,14 +27,17 @@ public class recv {
 			//destination = session.createQueue("FirstQueue");
 			destination = session.createTopic("zhaoTopic");
 			consumer = session.createConsumer(destination);
+			
 			while (true) {
-				TextMessage message = (TextMessage)consumer.receive(1000*10);
+				TextMessage message = (TextMessage)consumer.receive(1000);
 				if (null != message) {
 					System.out.println("recevie message: " + message.getText());
 				}else {
 					break;
 				}
 			}
+			
+			
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{

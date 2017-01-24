@@ -30,14 +30,30 @@ public class recv {
 			//destination = session.createQueue("FirstQueue");
 			destination = session.createTopic("zhaoTopic");
 			consumer = session.createConsumer(destination);
+			/*
 			while (true) {
-				TextMessage message = (TextMessage)consumer.receive(1000*10);
+				TextMessage message = (TextMessage)consumer.receive(1000);
 				if (null != message) {
 					System.out.println("recevie message: " + message.getText());
 				}else {
 					break;
 				}
 			}
+			*/
+			
+			consumer.setMessageListener(new MessageListener() {
+				@Override
+				public void onMessage(Message msg) {
+					try {
+						TextMessage message = (TextMessage)msg;
+						System.out.println("consumerOne 收到消息： " + message.getText());
+						session.commit();
+					}catch(JMSException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
