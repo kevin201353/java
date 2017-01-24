@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="javax.jms.Connection"/>
+<fullyQualifiedTypeName name="javax.jms.ConnectionFactory"/>
+<fullyQualifiedTypeName name="javax.jms.DeliveryMode"/>
+<fullyQualifiedTypeName name="javax.jms.Destination"/>
+<fullyQualifiedTypeName name="javax.jms.MessageProducer"/>
+<fullyQualifiedTypeName name="javax.jms.Session"/>
+<fullyQualifiedTypeName name="javax.jms.TextMessage"/>
+<fullyQualifiedTypeName name="org.apache.activemq.ActiveMQConnection"/>
+<fullyQualifiedTypeName name="org.apache.activemq.ActiveMQConnectionFactory"/>
+<fullyQualifiedTypeName name="javax.jms.MessageConsumer"/>
+</qualifiedTypeNameHistroy>
