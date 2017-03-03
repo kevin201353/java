@@ -1,0 +1,7 @@
+package msgcomm;
+
+public class display {
+	private String host;
+	private String port;
+	private String vmId;
+}

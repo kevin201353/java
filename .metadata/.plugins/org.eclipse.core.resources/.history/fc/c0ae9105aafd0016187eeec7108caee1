@@ -1,0 +1,13 @@
+package msgcomm;
+
+public class display {
+	private String host;
+	private String port;
+	private String vmId;
+	public display(String host, String port, String vmId)
+	{
+		this.host = host;
+		this.port = port;
+		this.vmId = vmId;
+	}
+}

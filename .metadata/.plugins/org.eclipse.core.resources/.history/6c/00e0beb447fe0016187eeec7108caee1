@@ -1,0 +1,7 @@
+package msgcomm;
+
+public class recvMsg {
+	public void recMsgRunning() {
+		
+	}
+}

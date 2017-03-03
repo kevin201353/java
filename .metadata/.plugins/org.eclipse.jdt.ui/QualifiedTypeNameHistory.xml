@@ -10,4 +10,9 @@
 <fullyQualifiedTypeName name="org.apache.activemq.ActiveMQConnection"/>
 <fullyQualifiedTypeName name="org.apache.activemq.ActiveMQConnectionFactory"/>
 <fullyQualifiedTypeName name="javax.jms.MessageConsumer"/>
+<fullyQualifiedTypeName name="javax.jms.JMSException"/>
+<fullyQualifiedTypeName name="com.sun.corba.se.impl.protocol.giopmsgheaders.Message"/>
+<fullyQualifiedTypeName name="javax.jms.MessageListener"/>
+<fullyQualifiedTypeName name="java.lang.Thread"/>
+<fullyQualifiedTypeName name="javax.jms.BytesMessage"/>
 </qualifiedTypeNameHistroy>

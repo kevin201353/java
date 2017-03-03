@@ -1,0 +1,83 @@
+package msgcomm;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+
+import org.apache.activemq.ActiveMQConnection;
+import org.apache.activemq.ActiveMQConnectionFactory;
+
+import net.sf.json.JSONObject;
+
+class ThreadTest extends Thread {
+	private int ticket = 100;
+	public void run() {
+		while(true) {
+			if (ticket > 0){
+				System.out.println(Thread.currentThread().getName() + "is saling ticket" + ticket--);
+			}else
+			{
+				break;
+			}
+		}
+	}
+}
+
+class ThreadTest2 implements Runnable {
+	public Session session_t;
+	public MessageConsumer  MessageConsumer_t;
+	public ThreadTest2(Session session, MessageConsumer messageconsumer) {
+		session_t = session;
+		MessageConsumer_t = messageconsumer;
+	}
+	public void run(){
+		while(true){
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+}
+
+public class recvMsg {
+	public void recMsgRunning() {
+		ConnectionFactory connectionFactory;
+		Connection connection = null;
+		Session session;
+		Destination destination;
+		MessageConsumer consumer;
+		connectionFactory = new ActiveMQConnectionFactory (ActiveMQConnection.DEFAULT_USER,ActiveMQConnection.DEFAULT_PASSWORD,"tcp://localhost:61616");
+		try {
+			connection = connectionFactory.createConnection();
+			connection.start();
+			session = connection.createSession(Boolean.TRUE, Session.AUTO_ACKNOWLEDGE);
+			//destination = session.createQueue("FirstQueue");
+			destination = session.createTopic("zhaoTopic");
+			consumer = session.createConsumer(destination);
+			ThreadTest2 thread_test = new ThreadTest2(session, consumer);
+			thread_test.run();
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			try {
+				if (null != connection) {
+					connection.close();
+				}
+			}catch(Throwable ignore) {
+				
+			}
+		}
+		System.out.println("Hello World Receive.");
+	}
+}

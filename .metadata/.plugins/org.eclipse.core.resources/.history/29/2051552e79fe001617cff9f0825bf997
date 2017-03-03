@@ -1,0 +1,79 @@
+package msgcomm;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.jms.BytesMessage;
+
+import org.apache.activemq.ActiveMQConnection;
+import org.apache.activemq.ActiveMQConnectionFactory;
+
+import net.sf.json.JSONObject;
+
+class ThreadTest extends Thread {
+	public Session session_t;
+	public MessageConsumer  MessageConsumer_t;
+	public ThreadTest2(Session session, MessageConsumer messageconsumer) {
+		session_t = session;
+		MessageConsumer_t = messageconsumer;
+	}
+	public void run(){
+		while(true){
+//			try{
+//				BytesMessage bytesMessage = (BytesMessage)MessageConsumer_t.receive(1000*10);
+//				if (null != bytesMessage) {
+//					System.out.println("recevie message: " + bytesMessage.readChar());
+//				}
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//			try {
+//				Thread.sleep(2000);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+			System.out.println("Hello World Receive   11111.");
+		}
+	}
+}
+
+public class recvMsg {
+	public void recMsgRunning() {
+		ConnectionFactory connectionFactory;
+		Connection connection = null;
+		Session session;
+		Destination destination;
+		MessageConsumer consumer;
+		connectionFactory = new ActiveMQConnectionFactory (ActiveMQConnection.DEFAULT_USER,ActiveMQConnection.DEFAULT_PASSWORD,"tcp://localhost:61616");
+		try {
+			connection = connectionFactory.createConnection();
+			connection.start();
+			session = connection.createSession(Boolean.TRUE, Session.AUTO_ACKNOWLEDGE);
+			destination = session.createQueue("edu_Queue");
+			//destination = session.createTopic("zhaoTopic");
+			consumer = session.createConsumer(destination);
+			//ThreadTest2 thread_test = new ThreadTest2(session, consumer);
+			//thread_test.run();
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			try {
+				if (null != connection) {
+					connection.close();
+				}
+			}catch(Throwable ignore) {
+				
+			}
+		}
+		System.out.println("Hello World Receive.");
+	}
+}
