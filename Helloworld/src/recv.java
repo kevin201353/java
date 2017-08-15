@@ -22,7 +22,7 @@ public class recv {
 		Session session;
 		Destination destination;
 		MessageConsumer consumer;
-		connectionFactory = new ActiveMQConnectionFactory (ActiveMQConnection.DEFAULT_USER,ActiveMQConnection.DEFAULT_PASSWORD,"tcp://localhost:61616");
+		connectionFactory = new ActiveMQConnectionFactory (ActiveMQConnection.DEFAULT_USER,ActiveMQConnection.DEFAULT_PASSWORD, "failover://(tcp://localhost:61616)");
 		try {
 			connection = connectionFactory.createConnection();
 			connection.start();

@@ -33,7 +33,7 @@ public class test {
 		Session session;
 		Destination  destination;
 		MessageProducer   producer;
-		connectionFactory = new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_USER,ActiveMQConnection.DEFAULT_PASSWORD, "tcp://localhost:61616");
+		connectionFactory = new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_USER,ActiveMQConnection.DEFAULT_PASSWORD, "failover://(tcp://localhost:61616)");
 		
 		try {
 			connection = connectionFactory.createConnection();
@@ -101,60 +101,86 @@ class ThreadTest extends Thread {
 				String str_time = milllis.toString();
 				System.out.println(str_time);
 				System.out.println(Thread.currentThread().getName() + " sendcount :" +  sendCount);
-//				if (sendCount == 0) { //显示动画
-//					try {
-//						System.out.println("0000000");
-//						map.put("datetime", str_time);
-//						map.put("action", "classbegin");
-//						jsonObject = JSONObject.fromObject(map);
-//						System.out.println(jsonObject);
-//						
-//						//message = session_t.createTextMessage(jsonObject.toString());
-//						message = session_t.createBytesMessage();
-//						message.writeBytes(jsonObject.toString().getBytes());
-//					} catch (JMSException e1) {
-//						// TODO Auto-generated catch block
-//						e1.printStackTrace();
-//					}
-//					try {
-//						messageProducer_t.send(message);
-//						session_t.commit();
-//					} catch (JMSException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//				}//sendCount==0
+				if (sendCount == 0) { //显示动画
+					try {
+						System.out.println("0000000");
+						map.put("datetime", str_time);
+						map.put("action", "classbegin");
+						jsonObject = JSONObject.fromObject(map);
+						System.out.println(jsonObject);
+						
+						//message = session_t.createTextMessage(jsonObject.toString());
+						message = session_t.createBytesMessage();
+						message.writeBytes(jsonObject.toString().getBytes());
+					} catch (JMSException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					try {
+						messageProducer_t.send(message);
+						session_t.commit();
+					} catch (JMSException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}//sendCount==0
+				
+				if (sendCount == 20) {
+					try {
+						System.out.println("0000000");
+						map.put("datetime", str_time);
+						map.put("action", "unReconnect");
+						jsonObject = JSONObject.fromObject(map);
+						System.out.println(jsonObject);
+						
+						//message = session_t.createTextMessage(jsonObject.toString());
+						message = session_t.createBytesMessage();
+						message.writeBytes(jsonObject.toString().getBytes());
+					} catch (JMSException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					try {
+						messageProducer_t.send(message);
+						session_t.commit();
+					} catch (JMSException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}//sendCount==0
 
-//				if (sendCount == 4) { //上课
-//					try {
-//						   System.out.println("44444444");
-//						   map.put("module", "class");
-//						   map.put("datetime", str_time);
-//						   map.put("action", "display");
-//						   jsonObject = JSONObject.fromObject(map);
-//						   System.out.println(jsonObject);
-//						   display dds = new display("192.168.110.211", "5961", "5961");
-//						   jsonObject = jsonObject.fromObject(dds);
-//						   System.out.println(jsonObject);
-//						   map.put("data", dds);
-//						   jsonObject = JSONObject.fromObject(map);
-//						   System.out.println(jsonObject);
-//						   //message = session_t.createTextMessage(jsonObject.toString());
-//						   //BytesMessage message = session_t.createBytesMessage();
-//						   message = session_t.createBytesMessage();
-//						   message.writeBytes(jsonObject.toString().getBytes());
-//					} catch (JMSException e1) {
-//						// TODO Auto-generated catch block
-//						e1.printStackTrace();
-//					}
-//					try {
-//						messageProducer_t.send(message);
-//						session_t.commit();
-//					} catch (JMSException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//				}//sendCount==4
+				if (sendCount == 5) { //上课
+					try {
+						   System.out.println("44444444");
+						   map.put("module", "class");
+						   map.put("datetime", str_time);
+						   map.put("action", "display");
+						   jsonObject = JSONObject.fromObject(map);
+						   System.out.println(jsonObject);
+						   display dds = new display("192.168.110.231", "5904", "5904");
+						   jsonObject = jsonObject.fromObject(dds);
+						   System.out.println(jsonObject);
+						   map.put("data", dds);
+						   jsonObject = JSONObject.fromObject(map);
+						   System.out.println(jsonObject);
+						   //message = session_t.createTextMessage(jsonObject.toString());
+						   //BytesMessage message = session_t.createBytesMessage();
+						   message = session_t.createBytesMessage();
+						   message.writeBytes(jsonObject.toString().getBytes());
+					} catch (JMSException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					try {
+						messageProducer_t.send(message);
+						session_t.commit();
+					} catch (JMSException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}//sendCount==4
+				
+				
 //				if (sendCount == 5) { //上课
 //					try {
 //						   System.out.println("44444444");
@@ -208,31 +234,31 @@ class ThreadTest extends Thread {
 //				}
 //			  }//sendCount==10
 			  
-				if (sendCount > 5)
-				{
-							try {
-							System.out.println("0000000");
-							map.put("datetime", str_time);
-							map.put("action", "heartbeat");
-							jsonObject = JSONObject.fromObject(map);
-							System.out.println(jsonObject);
-							
-							//message = session_t.createTextMessage(jsonObject.toString());
-							message = session_t.createBytesMessage();
-							message.writeBytes(jsonObject.toString().getBytes());
-						} catch (JMSException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						try {
-							messageProducer_t.send(message);
-							session_t.commit();
-						} catch (JMSException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-				}//if heartbeat
-//			  if (sendCount == 3) //自习
+//				if (sendCount > 5)
+//				{
+//							try {
+//							System.out.println("0000000");
+//							map.put("datetime", str_time);
+//							map.put("action", "heartbeat");
+//							jsonObject = JSONObject.fromObject(map);
+//							System.out.println(jsonObject);
+//							
+//							//message = session_t.createTextMessage(jsonObject.toString());
+//							message = session_t.createBytesMessage();
+//							message.writeBytes(jsonObject.toString().getBytes());
+//						} catch (JMSException e1) {
+//							// TODO Auto-generated catch block
+//							e1.printStackTrace();
+//						}
+//						try {
+//							messageProducer_t.send(message);
+//							session_t.commit();
+//						} catch (JMSException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//				}//if heartbeat
+//			  if (sendCount == 15) //自习
 //			  {
 //				 try {
 //					   System.out.println("10101010");
@@ -257,57 +283,57 @@ class ThreadTest extends Thread {
 //					e.printStackTrace();
 //				}
 //			  }//sendCount==20
-			  if (sendCount == 2) //演示
-			  {
-				 try {
-					   System.out.println("20202020");
-					   Map<String, Object> map_demo = new HashMap<String, Object>();
-					   map_demo.put("command", "eclass_client -h 192.168.8.182 -p 22222 -s 100000 -m 3 -debug");
-					   map.put("module", "class");
-					   map.put("datetime", str_time);
-					   map.put("action", "start_demonstrate");
-					   map.put("data", map_demo);
-					   jsonObject = JSONObject.fromObject(map);
-					   System.out.println(jsonObject);
-					   //message = session_t.createTextMessage(jsonObject.toString());
-					   message = session_t.createBytesMessage();
-					   message.writeBytes(jsonObject.toString().getBytes());
-				} catch (JMSException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				try {
-					messageProducer_t.send(message);
-					session_t.commit();
-				} catch (JMSException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			  }//sendCount==20
-			  if (sendCount == 10) //结束演示
-			  {
-				 try {
-					   System.out.println("30303030");
-					   map.put("module", "class");
-					   map.put("datetime", str_time);
-					   map.put("action", "stop_demonstrate");
-					   jsonObject = JSONObject.fromObject(map);
-					   System.out.println(jsonObject);
-					   //message = session_t.createTextMessage(jsonObject.toString());
-					   message = session_t.createBytesMessage();
-					   message.writeBytes(jsonObject.toString().getBytes());
-				} catch (JMSException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				try {
-					messageProducer_t.send(message);
-					session_t.commit();
-				} catch (JMSException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			  }//sendCount==30
+//			  if (sendCount == 2) //演示
+//			  {
+//				 try {
+//					   System.out.println("20202020");
+//					   Map<String, Object> map_demo = new HashMap<String, Object>();
+//					   map_demo.put("command", "eclass_client -h 192.168.8.182 -p 22222 -s 100000 -m 3 -debug");
+//					   map.put("module", "class");
+//					   map.put("datetime", str_time);
+//					   map.put("action", "start_demonstrate");
+//					   map.put("data", map_demo);
+//					   jsonObject = JSONObject.fromObject(map);
+//					   System.out.println(jsonObject);
+//					   //message = session_t.createTextMessage(jsonObject.toString());
+//					   message = session_t.createBytesMessage();
+//					   message.writeBytes(jsonObject.toString().getBytes());
+//				} catch (JMSException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//				try {
+//					messageProducer_t.send(message);
+//					session_t.commit();
+//				} catch (JMSException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			  }//sendCount==20
+//			  if (sendCount == 10) //结束演示
+//			  {
+//				 try {
+//					   System.out.println("30303030");
+//					   map.put("module", "class");
+//					   map.put("datetime", str_time);
+//					   map.put("action", "stop_demonstrate");
+//					   jsonObject = JSONObject.fromObject(map);
+//					   System.out.println(jsonObject);
+//					   //message = session_t.createTextMessage(jsonObject.toString());
+//					   message = session_t.createBytesMessage();
+//					   message.writeBytes(jsonObject.toString().getBytes());
+//				} catch (JMSException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//				try {
+//					messageProducer_t.send(message);
+//					session_t.commit();
+//				} catch (JMSException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			  }//sendCount==30
 //			  
 //			  if (sendCount == 35) //结束演示后， 点击下课
 //			  {
@@ -342,13 +368,13 @@ class ThreadTest extends Thread {
 //			  }//sendCount==35
 			  tickets--;
 			  sendCount++;
-			  if (sendCount == 11)
+			  if (sendCount == 30)
 			  {
 				  sendCount = 0;
 			  }
 			}//if(tickets > 0)
 			try {
-				Thread.sleep(31000); //2000
+				Thread.sleep(2000); 
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
