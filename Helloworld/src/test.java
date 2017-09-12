@@ -17,41 +17,51 @@ import net.sf.json.JSONObject;
 import javax.jms.BytesMessage;
 
 import msgcomm.*;
+import java.util.Scanner; 
 
 //java main
+
 public class test {
 
 	private static final int SEND_NUMBER = 5;
+	private static ConnectionFactory  connectionFactory;
+	private static Connection connection = null;
+	private static Session session;
+	private static Destination  destination;
+	private static MessageProducer   producer;
 	public test() {
 		// TODO Auto-generated constructor stub
 	}
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub	       
-		ConnectionFactory  connectionFactory;
-		Connection connection = null;
-		Session session;
-		Destination  destination;
-		MessageProducer   producer;
+		// TODO Auto-generated method stub
+		MqStart();
+		ReadStream();
+	}
+	
+	public static void ReadStream() {
+		ThreadReadStream  stream = new ThreadReadStream(session, producer);
+		stream.start();
+	}
+	public static void MqStart() {
 		connectionFactory = new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_USER,ActiveMQConnection.DEFAULT_PASSWORD, "failover://(tcp://localhost:61616)");
 		
 		try {
 			connection = connectionFactory.createConnection();
 			connection.start();
 			session = connection.createSession(Boolean.TRUE, Session.AUTO_ACKNOWLEDGE);
-			destination = session.createQueue("edu_ecd68a022b8f");
+			destination = session.createQueue("edu_4a54ec10494d");
 			//destination = session.createTopic("zhaoTopic");
 			producer = session.createProducer(destination);
 			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-			//sendMessage(session, producer);
-			//ThreadTest2 thread_test = new ThreadTest2(session, producer);
-			//thread_test.run();
+			/*
 			ThreadTest thread_test = new ThreadTest(session, producer);
 			thread_test.start();
 			recvMsg recvmsg = new recvMsg();
 			recvmsg.recMsgRunning();
 			thread_test.wait();
 			recvmsg.wait_recv();
+			*/
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -64,9 +74,7 @@ public class test {
 //				
 //			}
 //		}
-		System.out.println("Hello World.");
 	}
-	
 	
 //	public static void sendMessage(Session session, MessageProducer producer) throws Exception {
 //		for (int i=1; i<=SEND_NUMBER;i++){
@@ -79,6 +87,116 @@ public class test {
 }
 
 
+class ThreadReadStream extends Thread {
+	private Session session_t;
+	private MessageProducer  messageProducer_t;
+	public ThreadReadStream(Session session, MessageProducer messageProducer) {
+		session_t = session;
+		messageProducer_t = messageProducer;
+	}
+	public void MulticastStart() {
+		Multicast multi = new Multicast();
+		JSONObject jsonObject = null;
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map <String, String> ingredients = new HashMap <String, String>();
+		map.put("action", "stop_broadcast");
+		ingredients.put("mac", "00:50:56:C0:00:08");
+		ingredients.put("type", "student");
+		jsonObject = JSONObject.fromObject(map);
+		jsonObject.put("data", ingredients);
+		multi.send(jsonObject.toString());
+		map.clear();
+		ingredients.clear();
+		map.put("action", "start_broadcast");
+		ingredients.put("mac", "00:50:56:C0:00:08");
+		ingredients.put("type", "student");
+		jsonObject = JSONObject.fromObject(map);
+		jsonObject.put("data", ingredients);
+		multi.send(jsonObject.toString());
+	}
+	
+	public void MultiStop(){
+		Multicast multi = new Multicast();
+		JSONObject jsonObject = null;
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map <String, String> ingredients = new HashMap <String, String>();
+		map.put("action", "stop_broadcast");
+		ingredients.put("mac", "00:50:56:C0:00:08");
+		ingredients.put("type", "student");
+		jsonObject = JSONObject.fromObject(map);
+		jsonObject.put("data", ingredients);
+		multi.send(jsonObject.toString());
+		map.clear();
+		ingredients.clear();
+	}
+	  public void run(){
+		   while(true){
+			   try{
+					 System.out.println("Please Input ");
+					// byte[] b = new byte[100];
+					 Scanner sc = new Scanner(System.in);   
+					// int n = System.in.read(b);
+					// String s = new String(b,0,n);
+					String s = sc.nextLine();
+					 System.out.println("输入内容为：" + s);
+					 if (s.compareToIgnoreCase("start_broadcast") == 0) {
+						  MulticastStart();
+					 }
+					 if (s.compareToIgnoreCase("stop_broadcast") == 0){
+						 MultiStop();
+					 }
+					 BytesMessage message = null;
+					JSONObject jsonObject = null;
+					Map<String, Object> map = new HashMap<String, Object>();
+					Long milllis = System.currentTimeMillis();
+					String str_time = milllis.toString();
+					 if (s.compareTo("template") == 0){
+							//classbegin
+							map.put("datetime", str_time);
+							map.put("action", "classbegin");
+							jsonObject = JSONObject.fromObject(map);
+							System.out.println(jsonObject);
+							message = session_t.createBytesMessage();
+							message.writeBytes(jsonObject.toString().getBytes());
+							messageProducer_t.send(message);
+							session_t.commit();
+							//display
+						   map.clear();
+						   map.put("module", "class");
+						   map.put("datetime", str_time);
+						   map.put("action", "display");
+						   jsonObject = JSONObject.fromObject(map);
+						   System.out.println(jsonObject);
+						   display dds = new display("192.168.110.254", "5907", "5907");
+						   jsonObject = jsonObject.fromObject(dds);
+						   System.out.println(jsonObject);
+						   map.put("data", dds);
+						   jsonObject = JSONObject.fromObject(map);
+						   System.out.println(jsonObject);
+						   message = session_t.createBytesMessage();
+						   message.writeBytes(jsonObject.toString().getBytes());
+							messageProducer_t.send(message);
+							session_t.commit();
+					 }
+					 if (s.compareTo("freeStudy") == 0){
+						   map.put("module", "class");
+						   map.put("datetime", str_time);
+						   map.put("action", "freeStudy");
+						   jsonObject = JSONObject.fromObject(map);
+						   System.out.println(jsonObject);
+						   message = session_t.createBytesMessage();
+						   message.writeBytes(jsonObject.toString().getBytes());
+						   messageProducer_t.send(message);
+						   session_t.commit();
+					 }
+					Thread.sleep(2000);
+				 }catch(Exception e)
+				 {
+					 
+				 }
+		   }
+	  }
+}
 
 class ThreadTest extends Thread {
 	private int tickets = 60000;
@@ -125,31 +243,31 @@ class ThreadTest extends Thread {
 					}
 				}//sendCount==0
 				
-				if (sendCount == 20) {
-					try {
-						System.out.println("0000000");
-						map.put("datetime", str_time);
-						map.put("action", "unReconnect");
-						jsonObject = JSONObject.fromObject(map);
-						System.out.println(jsonObject);
-						
-						//message = session_t.createTextMessage(jsonObject.toString());
-						message = session_t.createBytesMessage();
-						message.writeBytes(jsonObject.toString().getBytes());
-					} catch (JMSException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					try {
-						messageProducer_t.send(message);
-						session_t.commit();
-					} catch (JMSException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}//sendCount==0
+//				if (sendCount == 20) {
+//					try {
+//						System.out.println("0000000");
+//						map.put("datetime", str_time);
+//						map.put("action", "unReconnect");
+//						jsonObject = JSONObject.fromObject(map);
+//						System.out.println(jsonObject);
+//						
+//						//message = session_t.createTextMessage(jsonObject.toString());
+//						message = session_t.createBytesMessage();
+//						message.writeBytes(jsonObject.toString().getBytes());
+//					} catch (JMSException e1) {
+//						// TODO Auto-generated catch block
+//						e1.printStackTrace();
+//					}
+//					try {
+//						messageProducer_t.send(message);
+//						session_t.commit();
+//					} catch (JMSException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				}//sendCount==0
 
-				if (sendCount == 5) { //上课
+				if (sendCount == 3) { //上课
 					try {
 						   System.out.println("44444444");
 						   map.put("module", "class");
@@ -157,7 +275,7 @@ class ThreadTest extends Thread {
 						   map.put("action", "display");
 						   jsonObject = JSONObject.fromObject(map);
 						   System.out.println(jsonObject);
-						   display dds = new display("192.168.110.231", "5900", "5900");
+						   display dds = new display("192.168.110.130", "5921", "5921");
 						   jsonObject = jsonObject.fromObject(dds);
 						   System.out.println(jsonObject);
 						   map.put("data", dds);
@@ -258,31 +376,31 @@ class ThreadTest extends Thread {
 //							e.printStackTrace();
 //						}
 //				}//if heartbeat
-			  if (sendCount == 15) //自习
-			  {
-				 try {
-					   System.out.println("10101010");
-					   map.put("module", "class");
-					   map.put("datetime", str_time);
-					   map.put("action", "freeStudy");
-					   jsonObject = JSONObject.fromObject(map);
-					   System.out.println(jsonObject);
-					   //message = session_t.createTextMessage(jsonObject.toString());
-					   //BytesMessage message = session_t.createBytesMessage();
-					   message = session_t.createBytesMessage();
-					   message.writeBytes(jsonObject.toString().getBytes());
-				} catch (JMSException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				try {
-					messageProducer_t.send(message);
-					session_t.commit();
-				} catch (JMSException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			  }//sendCount==20
+//			  if (sendCount == 15) //自习
+//			  {
+//				 try {
+//					   System.out.println("10101010");
+//					   map.put("module", "class");
+//					   map.put("datetime", str_time);
+//					   map.put("action", "freeStudy");
+//					   jsonObject = JSONObject.fromObject(map);
+//					   System.out.println(jsonObject);
+//					   //message = session_t.createTextMessage(jsonObject.toString());
+//					   //BytesMessage message = session_t.createBytesMessage();
+//					   message = session_t.createBytesMessage();
+//					   message.writeBytes(jsonObject.toString().getBytes());
+//				} catch (JMSException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//				try {
+//					messageProducer_t.send(message);
+//					session_t.commit();
+//				} catch (JMSException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			  }//sendCount==15
 //			  if (sendCount == 2) //演示
 //			  {
 //				 try {
@@ -368,10 +486,11 @@ class ThreadTest extends Thread {
 //			  }//sendCount==35
 			  tickets--;
 			  sendCount++;
-			  if (sendCount == 30)
-			  {
-				  sendCount = 0;
-			  }
+//			  if (sendCount == 30)
+//			  {
+//				  sendCount = 0;
+//			  }
+			  return;
 			}//if(tickets > 0)
 			try {
 				Thread.sleep(2000); 
