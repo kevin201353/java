@@ -15,4 +15,6 @@
 <fullyQualifiedTypeName name="javax.jms.MessageListener"/>
 <fullyQualifiedTypeName name="java.lang.Thread"/>
 <fullyQualifiedTypeName name="javax.jms.BytesMessage"/>
+<fullyQualifiedTypeName name="com.mongodb.MongoClient"/>
+<fullyQualifiedTypeName name="com.mongodb.client.MongoDatabase"/>
 </qualifiedTypeNameHistroy>

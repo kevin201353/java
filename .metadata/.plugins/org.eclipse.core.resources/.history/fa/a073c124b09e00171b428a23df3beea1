@@ -167,7 +167,7 @@ class ThreadReadStream extends Thread {
 						   map.put("action", "display");
 						   jsonObject = JSONObject.fromObject(map);
 						   System.out.println(jsonObject);
-						   display dds = new display("192.168.110.254", "5900", "5900");
+						   display dds = new display("192.168.110.254", "5907", "5907");
 						   jsonObject = jsonObject.fromObject(dds);
 						   System.out.println(jsonObject);
 						   map.put("data", dds);
