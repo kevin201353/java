@@ -35,6 +35,8 @@ public class test {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		db mydb = new db();
+		mydb.db();
 		MqStart();
 		ReadStream();
 	}
@@ -115,6 +117,20 @@ class ThreadReadStream extends Thread {
 		multi.send(jsonObject.toString());
 	}
 	
+	public void MultiStop(){
+		Multicast multi = new Multicast();
+		JSONObject jsonObject = null;
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map <String, String> ingredients = new HashMap <String, String>();
+		map.put("action", "stop_broadcast");
+		ingredients.put("mac", "00:50:56:C0:00:08");
+		ingredients.put("type", "student");
+		jsonObject = JSONObject.fromObject(map);
+		jsonObject.put("data", ingredients);
+		multi.send(jsonObject.toString());
+		map.clear();
+		ingredients.clear();
+	}
 	  public void run(){
 		   while(true){
 			   try{
@@ -127,6 +143,9 @@ class ThreadReadStream extends Thread {
 					 System.out.println(" ‰»Îƒ⁄»›Œ™£∫" + s);
 					 if (s.compareToIgnoreCase("start_broadcast") == 0) {
 						  MulticastStart();
+					 }
+					 if (s.compareToIgnoreCase("stop_broadcast") == 0){
+						 MultiStop();
 					 }
 					 BytesMessage message = null;
 					JSONObject jsonObject = null;
@@ -150,7 +169,7 @@ class ThreadReadStream extends Thread {
 						   map.put("action", "display");
 						   jsonObject = JSONObject.fromObject(map);
 						   System.out.println(jsonObject);
-						   display dds = new display("192.168.110.254", "5907", "5907");
+						   display dds = new display("192.168.110.254", "5900", "5900");
 						   jsonObject = jsonObject.fromObject(dds);
 						   System.out.println(jsonObject);
 						   map.put("data", dds);
@@ -172,6 +191,7 @@ class ThreadReadStream extends Thread {
 						   messageProducer_t.send(message);
 						   session_t.commit();
 					 }
+					Thread.sleep(2000);
 				 }catch(Exception e)
 				 {
 					 

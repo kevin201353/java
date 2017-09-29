@@ -35,6 +35,9 @@ public class test {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		db mydb = new db();
+		mydb.db();
+		mydb.getFileds("name");
 		MqStart();
 		ReadStream();
 	}

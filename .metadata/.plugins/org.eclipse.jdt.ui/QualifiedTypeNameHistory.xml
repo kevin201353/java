@@ -17,4 +17,7 @@
 <fullyQualifiedTypeName name="javax.jms.BytesMessage"/>
 <fullyQualifiedTypeName name="com.mongodb.MongoClient"/>
 <fullyQualifiedTypeName name="com.mongodb.client.MongoDatabase"/>
+<fullyQualifiedTypeName name="com.mongodb.client.MongoCollection"/>
+<fullyQualifiedTypeName name="javax.swing.text.Document"/>
+<fullyQualifiedTypeName name="org.bson.Document"/>
 </qualifiedTypeNameHistroy>
